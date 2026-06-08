@@ -1,0 +1,33 @@
+schema: spec-driven
+
+# ── 项目上下文 ──────────────────────────────────────────
+# 每次创建 artifact 时自动注入 AI，
+# 确保所有产出与项目技术栈、设计风格、部署目标一致。
+context: |
+  项目：电商下单系统（E-commerce order placement system）
+  技术栈：React 19 + Vite 7 + TypeScript + Zustand 5 + Tailwind CSS v4
+  部署：GitHub Pages，base path 为 /my-shop-website/
+  设计风格：极简白底与活力促销，要大量留白、大图、配色克制与高饱和色、
+           价格醒目、信息密集相结合，支持亮/暗切换
+  性能：首屏加载 < 2 秒，所有图片使用 lazy loading
+
+# ── 产物规则 ────────────────────────────────────────────
+# 各阶段 artifact 的强制约束，AI 生成时自动遵守。
+rules:
+  proposal:
+    - 必须明确写出 out-of-scope（不做什么）
+    - 必须评估对现有功能的影响
+
+  specs:
+    - 使用 Given/When/Then 格式描述交互行为
+    - 每个 spec 必须包含至少一个边界/异常场景
+
+  tasks:
+    - 每个任务粒度不超过 30 分钟
+    - 按 Phase 分组，每个 Phase 结束后等待我确认
+
+# ── 语言与区域 ─────────────────────────────────────────
+# 所有产物（proposal / specs / tasks）均以此为准。
+languages: |
+  Generate all artifacts in Simplified Chinese.
+  Use English for code-related terms (组件名、API 路径、变量名等).

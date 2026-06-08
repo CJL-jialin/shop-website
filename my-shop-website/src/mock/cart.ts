@@ -1,0 +1,48 @@
+import type { CartItem } from '../stores/useCartStore'
+
+export const mockCartItems: CartItem[] = [
+  {
+    itemId: 'p1_深空黑',
+    productId: 'p1',
+    name: 'Apple iPhone 16 Pro Max',
+    spec: '深空黑',
+    price: 8999,
+    quantity: 1,
+    stock: 99,
+    imageUrl: 'https://picsum.photos/seed/product1/400/500',
+    selected: true,
+  },
+  {
+    itemId: 'p5_42码',
+    productId: 'p5',
+    name: 'Nike Air Jordan 1 Retro',
+    spec: '42码',
+    price: 1299,
+    quantity: 1,
+    stock: 99,
+    imageUrl: 'https://picsum.photos/seed/product5/400/500',
+    selected: true,
+  },
+  {
+    itemId: 'p6_标配',
+    productId: 'p6',
+    name: '戴森 V16 无绳吸尘器',
+    spec: '标配',
+    price: 3999,
+    quantity: 1,
+    stock: 99,
+    imageUrl: 'https://picsum.photos/seed/product6/400/500',
+    selected: true,
+  },
+  {
+    itemId: 'p4_M4 Pro_32GB',
+    productId: 'p4',
+    name: 'MacBook Pro 16" M4',
+    spec: 'M4 Pro / 32GB',
+    price: 19999,
+    quantity: 1,
+    stock: 99,
+    imageUrl: 'https://picsum.photos/seed/product4/400/500',
+    selected: true,
+  },
+]
