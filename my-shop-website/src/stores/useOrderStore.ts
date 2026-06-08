@@ -7,7 +7,7 @@ interface OrderStore {
   ordersByStatus: (status: OrderStatus | 'all') => OrderItem[]
 }
 
-export const useOrderStore = create<OrderStore>((set, get) => ({
+export const useOrderStore = create<OrderStore>((_set, get) => ({
   orders: mockOrders,
 
   ordersByStatus: (status) => {

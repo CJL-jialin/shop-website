@@ -48,7 +48,7 @@ function derive(items: CartItem[]) {
   return { allCount, selectedItems, selectedCount, selectedTotal, isAllSelected }
 }
 
-export const useCartStore = create<CartStore>((set, get) => ({
+export const useCartStore = create<CartStore>((set, _get) => ({
   items: mockCartItems,
   ...derive(mockCartItems),
   checkoutMessage: null,
