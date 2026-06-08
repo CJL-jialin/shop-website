@@ -1,6 +1,5 @@
-import { useState, useMemo } from 'react'
-import { useOrderStore } from '../stores/useOrderStore'
-import type { OrderStatus } from '../mock/orders'
+import { useState, useMemo, useEffect } from 'react'
+import { useOrderStore, type OrderStatus } from '../stores/useOrderStore'
 import TabBar from '../components/TabBar'
 
 const STATUS_TABS: { key: OrderStatus | 'all'; label: string }[] = [
@@ -21,7 +20,10 @@ const STATUS_TEXT: Record<OrderStatus, string> = {
 
 export default function MyOrdersPage() {
   const [activeTab, setActiveTab] = useState<OrderStatus | 'all'>('all')
+  const loadOrders = useOrderStore((s) => s.loadOrders)
   const ordersByStatus = useOrderStore((s) => s.ordersByStatus)
+
+  useEffect(() => { loadOrders() }, [])
   const visibleOrders = useMemo(
     () => ordersByStatus(activeTab),
     [activeTab, ordersByStatus]

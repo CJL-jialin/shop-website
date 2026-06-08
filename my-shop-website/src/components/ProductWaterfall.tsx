@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import ProductCard from './ProductCard'
-import { generateProducts, TOTAL_PAGES } from '../mock/products'
-import type { Product } from '../mock/products'
+import { apiGet } from '../api/client'
+import { type Product } from '../mock/products'
+
+interface BackendProduct {
+  id: string
+  name: string
+  price: number
+  image_url: string | null
+}
 
 interface Props {
   startPage?: number
@@ -12,7 +19,33 @@ export default function ProductWaterfall({ startPage = 1 }: Props) {
   const [page, setPage] = useState(startPage - 1)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
+  const [totalPages, setTotalPages] = useState(99)
   const sentinelRef = useRef<HTMLDivElement>(null)
+
+  const loadPage = useCallback(async (p: number) => {
+    if (loading) return
+    setLoading(true)
+    try {
+      const data = await apiGet<{ products: BackendProduct[]; total: number }>(
+        `/products?page=${p}&size=10`,
+      )
+      const mapped: Product[] = data.products.map((bp) => ({
+        id: bp.id,
+        name: bp.name,
+        price: bp.price,
+        imageUrl: bp.image_url ?? '',
+      }))
+      setProducts((prev) => [...prev, ...mapped])
+      setPage(p)
+      setTotalPages(Math.ceil(data.total / 10))
+      setHasMore(p < Math.ceil(data.total / 10))
+    } catch {
+      // 后端不可用时静默降级
+      setHasMore(false)
+    } finally {
+      setLoading(false)
+    }
+  }, [loading])
 
   // 首屏加载
   useEffect(() => {
@@ -20,27 +53,14 @@ export default function ProductWaterfall({ startPage = 1 }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function loadPage(p: number) {
-    if (loading) return
-    setLoading(true)
-    // 模拟异步加载
-    setTimeout(() => {
-      const newItems = generateProducts(p, 10)
-      setProducts((prev) => [...prev, ...newItems])
-      setPage(p)
-      setHasMore(p < TOTAL_PAGES)
-      setLoading(false)
-    }, 400)
-  }
-
-  // IntersectionObserver：监听底部哨兵
+  // IntersectionObserver
   const handleIntersect = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       if (entries[0].isIntersecting && hasMore && !loading) {
         loadPage(page + 1)
       }
     },
-    [hasMore, loading, page]
+    [hasMore, loading, page, loadPage],
   )
 
   useEffect(() => {
@@ -56,7 +76,6 @@ export default function ProductWaterfall({ startPage = 1 }: Props) {
   // 奇偶交替分配到左右两列
   const leftColumn: Product[] = []
   const rightColumn: Product[] = []
-  // 奇偶交替：奇数索引 → 左列，偶数索引 → 右列
   products.forEach((p, i) => {
     if (i % 2 === 0) {
       leftColumn.push(p)

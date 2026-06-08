@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useUserStore } from '../stores/useUserStore'
 import Toast from '../components/Toast'
 import TabBar from '../components/TabBar'
 
 export default function ShippingAddressPage() {
   const addresses = useUserStore((s) => s.addresses)
+  const fetchAddresses = useUserStore((s) => s.fetchAddresses)
   const [toastMsg, setToastMsg] = useState<string | null>(null)
+
+  useEffect(() => { fetchAddresses() }, [])
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] pb-24">

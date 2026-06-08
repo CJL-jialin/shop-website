@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { useCartStore } from '../stores/useCartStore'
 import CartItemCard from '../components/CartItemCard'
 import CartSettlementBar from '../components/CartSettlementBar'
@@ -18,7 +18,10 @@ function useRandomStartPage() {
 
 export default function CartPage() {
   const recommendPage = useRandomStartPage()
+  const loadCart = useCartStore((s) => s.loadCart)
   const items = useCartStore((s) => s.items)
+
+  useEffect(() => { loadCart() }, [])
   const allCount = useCartStore((s) => s.allCount)
   const checkoutMessage = useCartStore((s) => s.checkoutMessage)
   const clearCheckoutMessage = useCartStore((s) => s.clearCheckoutMessage)
