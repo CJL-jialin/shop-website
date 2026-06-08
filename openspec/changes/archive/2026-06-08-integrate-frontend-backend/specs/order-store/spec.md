@@ -1,4 +1,4 @@
-## ADDED Requirements
+## MODIFIED Requirements
 
 ### Requirement: 订单状态管理
 系统 SHALL 使用 Zustand `useOrderStore` 管理订单数据，通过 `GET /api/orders` 从后端获取。

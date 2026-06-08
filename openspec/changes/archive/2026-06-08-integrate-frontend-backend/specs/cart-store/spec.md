@@ -1,4 +1,4 @@
-## ADDED Requirements
+## MODIFIED Requirements
 
 ### Requirement: 购物车状态管理
 系统 SHALL 在 Zustand `useCartStore` 中管理购物车数据，通过 API 调用获取和操作数据。

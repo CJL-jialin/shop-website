@@ -101,3 +101,99 @@ class AddressResponse(BaseModel):
     is_default: bool
 
     model_config = {"from_attributes": True}
+
+
+# ── 商品相关模型 ──
+
+
+class ProductResponse(BaseModel):
+    """商品响应体。"""
+
+    id: str
+    name: str
+    price: float
+    image_url: str | None = None
+    stock: int = 99
+    category: str | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class ProductListResponse(BaseModel):
+    """分页商品列表响应体。"""
+
+    products: list[ProductResponse]
+    total: int
+
+
+# ── 购物车相关模型 ──
+
+
+class CartItemCreate(BaseModel):
+    """加入购物车请求体。"""
+
+    product_id: str = Field(min_length=1)
+    product_name: str = Field(min_length=1)
+    spec: str = Field("默认", max_length=50)
+    price: float = Field(gt=0)
+    image_url: str | None = None
+
+
+class CartItemUpdate(BaseModel):
+    """更新购物车项请求体。"""
+
+    quantity: int | None = Field(None, ge=1)
+    selected: bool | None = None
+
+
+class CartItemResponse(BaseModel):
+    """购物车项响应体。"""
+
+    id: str
+    user_id: str
+    product_id: str
+    product_name: str
+    spec: str
+    price: float
+    quantity: int
+    image_url: str | None = None
+    selected: bool
+
+    model_config = {"from_attributes": True}
+
+
+class CheckoutResponse(BaseModel):
+    """结算响应体。"""
+
+    order_no: str
+    total_amount: float
+
+
+# ── 订单相关模型 ──
+
+
+class OrderItemResponse(BaseModel):
+    """订单项响应体。"""
+
+    id: str
+    product_id: str
+    product_name: str
+    product_image: str | None = None
+    quantity: int
+    price: float
+
+    model_config = {"from_attributes": True}
+
+
+class OrderResponse(BaseModel):
+    """订单响应体。"""
+
+    id: str
+    user_id: str
+    order_no: str
+    status: str
+    total_amount: float
+    created_at: str
+    order_items: list[OrderItemResponse] = []
+
+    model_config = {"from_attributes": True}

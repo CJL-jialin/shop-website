@@ -1,4 +1,4 @@
-## ADDED Requirements
+## MODIFIED Requirements
 
 ### Requirement: 用户信息存储
 系统 SHALL 使用 Zustand `useUserStore` 管理用户信息，数据从 API 获取而非 mock。

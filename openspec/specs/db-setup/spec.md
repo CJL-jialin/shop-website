@@ -51,8 +51,9 @@ FastAPI 应用 SHALL：
 - 将 `db_router` 通过 `app.include_router()` 注册
 - 将 `user_router` 通过 `app.include_router()` 注册
 - 将 `redis_router` 通过 `app.include_router()` 注册
+- 将 `product_router`、`cart_router`、`order_router` 通过 `app.include_router()` 注册
 - 在 `app/main.py` 文件末尾提供 `if __name__ == "__main__"` 入口，使用 uvicorn 启动
-- 后续新增的路由模块（redis_router 等）均通过 `include_router` 注册
+- 后续新增的路由模块均通过 `include_router` 注册
 
 #### Scenario: 健康检查返回正常
 - **GIVEN** FastAPI 应用已启动
@@ -98,3 +99,38 @@ FastAPI 应用 SHALL：
 - **GIVEN** FastAPI 应用已启动
 - **WHEN** 客户端发送 `POST /api/auth/register`，密码字段为 `"12"`（少于 6 字符）
 - **THEN** 返回 HTTP 422，响应体包含密码长度校验失败详情
+
+### Requirement: 业务模型扩展
+系统 SHALL 在 `backend/app/models.py` 中新增以下 ORM 模型：
+
+`Product` 模型 SHALL 包含：id（str PK）、name、price（Numeric）、image_url、stock（int）、category（str）。
+
+`Order` 模型 SHALL 包含：id（UUID PK）、user_id（FK→users.id CASCADE）、order_no（str 唯一）、status（str 默认 'pending'）、total_amount（Numeric）、created_at（DateTime）。包含与 OrderItem 的 relationship。
+
+`OrderItem` 模型 SHALL 包含：id（UUID PK）、order_id（FK→orders.id CASCADE）、product_id、product_name、product_image、quantity（int）、price（Numeric）。
+
+`CartItem` ORM 模型 SHALL 包含：id（UUID PK）、user_id（FK→users.id CASCADE）、product_id、product_name、spec、price（Numeric）、quantity（int）、image_url、selected（bool）。
+
+#### Scenario: 新增模型建表
+- **GIVEN** PostgreSQL 可连接
+- **WHEN** `Base.metadata.create_all()`
+- **THEN** 创建 products / orders / order_items / cart_items 表
+
+### Requirement: 业务路由注册
+系统 SHALL 在 `backend/app/main.py` 中将 `product_router`、`cart_router`、`order_router` 通过 `app.include_router()` 注册。
+
+FastAPI 应用 SHALL 更新 include_router 列表包含 product_router、cart_router、order_router。
+
+### Requirement: Pydantic 业务模型
+系统 SHALL 在 `backend/app/schemas.py` 中新增：`ProductResponse`、`ProductListResponse`、`CartItemCreate`、`CartItemUpdate`、`CartItemResponse`、`CheckoutResponse`、`OrderItemResponse`、`OrderResponse` Pydantic 模型。
+
+### Requirement: Faker 业务数据填充
+系统 SHALL 修改 `backend/app/seed.py`：
+- 导入 50 个商品名称生成 Product 记录
+- 为部分用户生成购物车数据（随机 2-5 件）
+- 生成订单及对应 OrderItem（混合 5 种状态）
+
+#### Scenario: seed 后业务表有数据
+- **GIVEN** 数据库可连接
+- **WHEN** 运行 seed.py
+- **THEN** products 表有 50 条记录，cart_items 有 10-15 条，orders 有 5-8 条
