@@ -39,6 +39,7 @@ interface UserStore {
   addAddress: (data: { name: string; phone: string; address: string; is_default?: boolean }) => Promise<void>
   updateAddress: (id: string, data: { name?: string; phone?: string; address?: string; is_default?: boolean }) => Promise<void>
   deleteAddress: (id: string) => Promise<void>
+  clearUser: () => void
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -87,4 +88,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
     await apiDel(`/user/addresses/${id}`)
     set((state) => ({ addresses: state.addresses.filter((a) => a.id !== id) }))
   },
+
+  clearUser: () => set({ user: null, addresses: [], orderCount: 0, favoriteCount: 0, couponCount: 0 }),
 }))
